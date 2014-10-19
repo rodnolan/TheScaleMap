@@ -36,7 +36,6 @@ package vo {
 		public var noteName_11_b7:String;
 		public var noteName_12_7:String;
 		
-		
 		public function MusicalScale(scaleName:String, intervals:Array, key:String, useSharps:Boolean = true) {
 			this.scaleName = scaleName;
 			intervalBits = new Bitfield();
@@ -72,8 +71,6 @@ package vo {
 				offset = chromaticScaleFlats.indexOf(key);
 				reorderedNotes = reindexArray(chromaticScaleFlats, offset);
 			}
-			
-			trace(reorderedNotes);
 			
 			this.noteName_01_1 = this.display_01_1 ? reorderedNotes[0] : "";
 			this.noteName_02_b2 = this.display_02_b2 ? reorderedNotes[1] : ""; 

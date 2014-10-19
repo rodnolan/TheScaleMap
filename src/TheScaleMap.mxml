@@ -11,6 +11,7 @@
 			
 			import spark.events.IndexChangeEvent;
 			
+			import vo.ChordType;
 			import vo.MusicalKeyConstants;
 			import vo.MusicalScale;
 
@@ -38,24 +39,26 @@
 			
 			private function generateChordTypes():void {
 				chordTypes = new ArrayCollection([
-					"Major",
-					"Minor",
-					"Diminished",
-					"Augmented",
-					"Major 6",
-					"Minor 6",
-					"Major 7",
-					"Minor 7",
-					"Dominant 7",
-					"Minor 7 b5",
-					"Suspended 2",
-					"Suspended 4",
-					"Major Add 9",
-					"Minor Add 9",
-					"Dominant 9",
-					"Major 9 #11",
-					"Minor 11",
-					"Dominant 9 #11"
+					new ChordType("Major", 			[1,0,0,0,1,0,0,1,0,0,0,0]),
+					new ChordType("Minor", 			[1,0,0,1,0,0,0,1,0,0,0,0]),
+					new ChordType("Diminished", 	[1,0,0,1,0,0,1,0,0,0,0,0]),
+					new ChordType("Augmented", 		[1,0,0,0,1,0,0,0,1,0,0,0]),
+					new ChordType("Major 6", 		[1,0,0,0,1,0,0,1,0,1,0,0]),
+					new ChordType("Minor 6", 		[1,0,0,1,0,0,0,1,0,1,0,0]),
+					new ChordType("Major 7", 		[1,0,0,0,1,0,0,1,0,0,0,1]),
+					new ChordType("Minor 7", 		[1,0,0,1,0,0,0,1,0,0,1,0]),
+					new ChordType("Dominant 7", 	[1,0,0,0,1,0,0,1,0,0,1,0]),
+					new ChordType("Minor 7 b5", 	[1,0,0,1,0,0,1,0,0,0,1,0]),
+					new ChordType("Suspended 2", 	[1,0,1,0,0,0,0,1,0,0,0,0]),
+					new ChordType("Suspended 4", 	[1,0,0,0,0,1,0,1,0,0,0,0]),
+					new ChordType("Major Add 9", 	[1,0,1,0,1,0,0,1,0,0,0,0]),
+					new ChordType("Minor Add 9", 	[1,0,1,1,0,0,0,1,0,0,0,0]),
+					new ChordType("Major 9", 		[1,0,1,0,1,0,0,1,0,0,0,1]),
+					new ChordType("Minor 9", 		[1,0,1,1,0,0,0,1,0,0,1,0]),
+					new ChordType("Dominant 9", 	[1,0,1,0,1,0,0,1,0,0,1,0]),
+					new ChordType("Major 9 #11", 	[1,0,1,0,1,0,1,1,0,0,0,1]),
+					new ChordType("Minor 11", 		[1,0,1,1,0,1,0,1,0,0,1,0]),
+					new ChordType("Dominant 9 #11", [1,0,1,0,1,0,1,1,0,0,1,0])
 				]);
 			}
 			
@@ -120,45 +123,51 @@
 		]]>
 	</fx:Script>
 
-	<s:Label id="lblKey" text="Select a key" />
-	<s:List id="lstKeys" dataProvider="{keys}" top="{lblKey.height + 5}" selectedItem="@{currentKey}" change="onSelectedKeyChange(event)" />
-	<s:CheckBox id="cbUseSharps" label="use sharps" selected="{useSharps}" change="onUseSharpsChanged(event)" left="5" top="{lstKeys.height + lstKeys.top + 10}"/>
-	<s:List id="lstChordTypes" dataProvider="{chordTypes}" top="{cbUseSharps.height + cbUseSharps.y + 5}" />
-	<s:DataGrid id="dgScales" dataProvider="{scales}" left="100" right="0" height="{dgScales.rowHeight * (scales.length + 1)}">
-		<s:typicalItem>
-			<s:DataItem 
-				scaleName="Major Pentatonic"
-				noteName_01_1="Root" 
-				noteName_02_2="C#" 
-				noteName_03_2="C#" 
-				noteName_04_b3="C#" 
-				noteName_05_3="C#" 
-				noteName_06_4="C#" 
-				noteName_07_b5="C#" 
-				noteName_08_5="C#" 
-				noteName_09_b6="C#" 
-				noteName_10_6="C#" 
-				noteName_11_b7="C#" 
-				noteName_12_7="C#" 
-				/>
-		</s:typicalItem>
-		<s:columns>
-			<s:ArrayList>
-				<s:GridColumn dataField="scaleName" headerText="Scale"/>
-				<s:GridColumn dataField="noteName_01_1" headerText="Root"  />
-				<s:GridColumn dataField="noteName_02_b2" headerText="b2"  />
-				<s:GridColumn dataField="noteName_03_2" headerText="2"  />
-				<s:GridColumn dataField="noteName_04_b3" headerText="b3"  />
-				<s:GridColumn dataField="noteName_05_3" headerText="3"  />
-				<s:GridColumn dataField="noteName_06_4" headerText="4"  />
-				<s:GridColumn dataField="noteName_07_b5" headerText="b5"  />
-				<s:GridColumn dataField="noteName_08_5" headerText="5"  />
-				<s:GridColumn dataField="noteName_09_b6" headerText="b6"  />
-				<s:GridColumn dataField="noteName_10_6" headerText="6"  />
-				<s:GridColumn dataField="noteName_11_b7" headerText="b7"  />
-				<s:GridColumn dataField="noteName_12_7" headerText="7"  />
-			</s:ArrayList>
-		</s:columns>
-	</s:DataGrid>
+	<s:VGroup id="vgLists" left="7" top="7">
+		<s:Label id="lblKey" text="Select a key" />
+		<s:List id="lstKeys" dataProvider="{keys}" selectedItem="@{currentKey}" change="onSelectedKeyChange(event)" />
+		<s:Label id="lblChordTypes" text="Select a chord type" />
+		<s:List id="lstChordTypes" dataProvider="{chordTypes}" labelField="name"/>
+	</s:VGroup>
+	
+	<s:VGroup top="7" left="{vgLists.width + vgLists.y + 7}" right="7">
+		<s:CheckBox id="cbUseSharps" label="use sharps" selected="{useSharps}" change="onUseSharpsChanged(event)" />
+		<s:DataGrid id="dgScales" dataProvider="{scales}" height="{dgScales.rowHeight * (scales.length + 1)}">
+			<s:typicalItem>
+				<s:DataItem 
+					scaleName="Major Pentatonic"
+					noteName_01_1="Root" 
+					noteName_02_2="C#" 
+					noteName_03_2="C#" 
+					noteName_04_b3="C#" 
+					noteName_05_3="C#" 
+					noteName_06_4="C#" 
+					noteName_07_b5="C#" 
+					noteName_08_5="C#" 
+					noteName_09_b6="C#" 
+					noteName_10_6="C#" 
+					noteName_11_b7="C#" 
+					noteName_12_7="C#" 
+					/>
+			</s:typicalItem>
+			<s:columns>
+				<s:ArrayList>
+					<s:GridColumn dataField="scaleName" headerText="Scale"/>
+					<s:GridColumn dataField="noteName_01_1" headerText="Root"  />
+					<s:GridColumn dataField="noteName_02_b2" headerText="b2"  />
+					<s:GridColumn dataField="noteName_03_2" headerText="2"  />
+					<s:GridColumn dataField="noteName_04_b3" headerText="b3"  />
+					<s:GridColumn dataField="noteName_05_3" headerText="3"  />
+					<s:GridColumn dataField="noteName_06_4" headerText="4"  />
+					<s:GridColumn dataField="noteName_07_b5" headerText="b5"  />
+					<s:GridColumn dataField="noteName_08_5" headerText="5"  />
+					<s:GridColumn dataField="noteName_09_b6" headerText="b6"  />
+					<s:GridColumn dataField="noteName_10_6" headerText="6"  />
+					<s:GridColumn dataField="noteName_11_b7" headerText="b7"  />
+					<s:GridColumn dataField="noteName_12_7" headerText="7"  />
+				</s:ArrayList>
+			</s:columns>
+		</s:DataGrid>
+	</s:VGroup>
 
 </s:WindowedApplication>
