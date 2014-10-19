@@ -2,6 +2,7 @@
 <s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
 					   xmlns:s="library://ns.adobe.com/flex/spark" 
 					   xmlns:mx="library://ns.adobe.com/flex/mx"
+					   minHeight="600"
 					   creationComplete="onCreationComplete(event)">
 	<fx:Script>
 		<![CDATA[
@@ -25,19 +26,65 @@
 			[Bindable]
 			private var keys:ArrayCollection;
 
+			[Bindable]
+			private var chordTypes:ArrayCollection;
+
 			
-			private function makeScales(key:String):void {
-				scales = new ArrayCollection();
-				scales.addItem(new MusicalScale("Major", [1,0,1,0,1,1,0,1,0,1,0,1], key));
-				scales.addItem(new MusicalScale("Minor", [1,0,1,1,0,1,0,1,1,0,1,0], key));
-				scales.addItem(new MusicalScale("Harmonic Minor", [1,0,1,1,0,1,0,1,1,0,0,1], key));
-				scales.addItem(new MusicalScale("Melodic Minor", [1,0,1,1,0,1,0,1,0,1,0,1], key));
-				scales.addItem(new MusicalScale("Diminished", [1,0,1,1,0,1,1,0,1,1,0,1], key));
-				scales.addItem(new MusicalScale("Major Pentatonic", [1,0,1,0,1,0,0,1,0,1,0,0], key));
-				scales.addItem(new MusicalScale("Minor Pentatonic", [1,0,0,1,0,1,0,1,0,0,1,0], key));
-				scales.addItem(new MusicalScale("Blues", [1,0,0,1,0,1,1,1,0,0,1,0], key));
-				scales.addItem(new MusicalScale("Chromatic", [1,1,1,1,1,1,1,1,1,1,1,1], key));
-				scales.addItem(new MusicalScale("whole tone", [1,0,1,0,1,0,1,0,1,0,1,0], key));
+			private function onCreationComplete(event:FlexEvent=null):void {
+				makeKeys();
+				makeScales(currentKey, useSharps);
+				generateChordTypes();
+			}
+			
+			private function generateChordTypes():void {
+				chordTypes = new ArrayCollection([
+					"Major",
+					"Minor",
+					"Diminished",
+					"Augmented",
+					"Major 6",
+					"Minor 6",
+					"Major 7",
+					"Minor 7",
+					"Dominant 7",
+					"Minor 7 b5",
+					"Suspended 2",
+					"Suspended 4",
+					"Major Add 9",
+					"Minor Add 9",
+					"Dominant 9",
+					"Major 9 #11",
+					"Minor 11",
+					"Dominant 9 #11"
+				]);
+			}
+			
+			private function makeScales(key:String, withSharps:Boolean):void {
+				//scales = new ArrayCollection();
+				var tempScales:ArrayCollection = new ArrayCollection();
+				tempScales.addItem(new MusicalScale("Major", [1,0,1,0,1,1,0,1,0,1,0,1], key, withSharps));
+				tempScales.addItem(new MusicalScale("Minor", [1,0,1,1,0,1,0,1,1,0,1,0], key, withSharps));
+				tempScales.addItem(new MusicalScale("Harmonic Minor", [1,0,1,1,0,1,0,1,1,0,0,1], key, withSharps));
+				tempScales.addItem(new MusicalScale("Melodic Minor", [1,0,1,1,0,1,0,1,0,1,0,1], key, withSharps));
+				tempScales.addItem(new MusicalScale("Diminished", [1,0,1,1,0,1,1,0,1,1,0,1], key, withSharps));
+				tempScales.addItem(new MusicalScale("Major Pentatonic", [1,0,1,0,1,0,0,1,0,1,0,0], key, withSharps));
+				tempScales.addItem(new MusicalScale("Minor Pentatonic", [1,0,0,1,0,1,0,1,0,0,1,0], key, withSharps));
+				tempScales.addItem(new MusicalScale("Blues", [1,0,0,1,0,1,1,1,0,0,1,0], key, withSharps));
+				tempScales.addItem(new MusicalScale("Chromatic", [1,1,1,1,1,1,1,1,1,1,1,1], key, withSharps));
+				tempScales.addItem(new MusicalScale("whole tone", [1,0,1,0,1,0,1,0,1,0,1,0], key, withSharps));
+				tempScales.addItem(new MusicalScale("Ionian mode", [1,0,1,0,1,0,1,0,1,0,1,0], key, withSharps));
+				tempScales.addItem(new MusicalScale("Dorian mode", [1,0,1,1,0,1,0,1,0,1,1,0], key, withSharps));
+				tempScales.addItem(new MusicalScale("Phrygian mode", [1,1,0,1,0,1,0,1,1,0,1,0], key, withSharps));
+				tempScales.addItem(new MusicalScale("Lydian mode", [1,0,1,0,1,0,1,1,0,1,0,1], key, withSharps));
+				tempScales.addItem(new MusicalScale("Mixolydian mode", [1,0,1,0,1,1,0,1,0,1,1,0], key, withSharps));
+				tempScales.addItem(new MusicalScale("Aeolian mode", [1,0,1,1,0,1,0,1,1,0,1,0], key, withSharps));
+				tempScales.addItem(new MusicalScale("Locrian mode", [1,1,0,1,0,1,1,0,1,0,1,0], key, withSharps));
+				if (!scales) {
+					scales = new ArrayCollection();
+				} else {
+					scales.removeAll();
+				}
+				scales.addAll(tempScales);
 			}
 			
 			private function makeKeys():void {
@@ -56,33 +103,32 @@
 				keys.addItem(MusicalKeyConstants.KEY_B);	
 			}
 			
-			
-			protected function onCreationComplete(event:FlexEvent=null):void {
-				makeKeys();
-				makeScales(currentKey);
-			}
-			
 			private function labelGetter (item:Object, gc:GridColumn):String {
-				//return item[gc.dataField] == true ? "x" : "";
-				return item[gc.dataField].toString();
+				return item[gc.dataField] == true ? "x" : "";
 			}
 			
 			protected function onSelectedKeyChange(event:IndexChangeEvent):void {
 				currentKey = event.target.selectedItem;
-				makeScales(currentKey);
+				makeScales(currentKey, useSharps);
+			}
+			
+			protected function onUseSharpsChanged(event:Event):void {
+				this.useSharps = event.target.selected;
+				makeScales(currentKey, useSharps);
 			}
 			
 		]]>
 	</fx:Script>
 
-	<s:Label id="lblKey" text="Pick a key" />
-	<s:List id="lstKeys" dataProvider="{keys}" top="{lblKey.height}" selectedItem="{currentKey}" change="onSelectedKeyChange(event)" />
-	<s:Label id="lblCurrentKey" text="{currentKey}" top="{lstKeys.height + lstKeys.top + 5}" />
-	<s:DataGrid dataProvider="{scales}" left="65" right="10" height="100%">
+	<s:Label id="lblKey" text="Select a key" />
+	<s:List id="lstKeys" dataProvider="{keys}" top="{lblKey.height + 5}" selectedItem="@{currentKey}" change="onSelectedKeyChange(event)" />
+	<s:CheckBox id="cbUseSharps" label="use sharps" selected="{useSharps}" change="onUseSharpsChanged(event)" left="5" top="{lstKeys.height + lstKeys.top + 10}"/>
+	<s:List id="lstChordTypes" dataProvider="{chordTypes}" top="{cbUseSharps.height + cbUseSharps.y + 5}" />
+	<s:DataGrid id="dgScales" dataProvider="{scales}" left="100" right="0" height="{dgScales.rowHeight * (scales.length + 1)}">
 		<s:typicalItem>
 			<s:DataItem 
 				scaleName="Major Pentatonic"
-				noteName_01_1="C#" 
+				noteName_01_1="Root" 
 				noteName_02_2="C#" 
 				noteName_03_2="C#" 
 				noteName_04_b3="C#" 
@@ -100,7 +146,7 @@
 			<s:ArrayList>
 				<s:GridColumn dataField="scaleName" headerText="Scale"/>
 				<s:GridColumn dataField="noteName_01_1" headerText="Root"  />
-				<s:GridColumn dataField="noteName_02_2" headerText="b2"  />
+				<s:GridColumn dataField="noteName_02_b2" headerText="b2"  />
 				<s:GridColumn dataField="noteName_03_2" headerText="2"  />
 				<s:GridColumn dataField="noteName_04_b3" headerText="b3"  />
 				<s:GridColumn dataField="noteName_05_3" headerText="3"  />
@@ -114,6 +160,5 @@
 			</s:ArrayList>
 		</s:columns>
 	</s:DataGrid>
-	<s:CheckBox label="use sharps" selected="{useSharps}" right="10" bottom="10"/>
 
 </s:WindowedApplication>
